@@ -12,7 +12,9 @@ import java.util.Map;
  * @notice:
  */
 public class ClassScheduleEntity {
+    //行
     private int row;
+    //列
     private int column;
     private String rowTag;
     private String columnTag;
@@ -33,7 +35,14 @@ public class ClassScheduleEntity {
         if (!rowTags.isEmpty()) {
             this.rowTags.addAll(rowTags);
         }
-        this.elementMap = new HashMap<>((row - 1) * (column - 1));
+        int total = (row) * (column);
+        this.elementMap = new HashMap<>(total);
+        for (int i = 0; i < total; i++) {
+            if (i < column || i % column == 0) {
+                continue;
+            }
+            addElement(new ClassScheduleElement(i / column, i % column, false));
+        }
     }
 
     public Map<String, ClassScheduleElement> getElementMap() {
@@ -56,6 +65,14 @@ public class ClassScheduleEntity {
         return row;
     }
 
+    public List<String> getColumnTags() {
+        return columnTags;
+    }
+
+    public List<String> getRowTags() {
+        return rowTags;
+    }
+
     public ClassScheduleElement getElement(int row, int column) {
         Map<String, ClassScheduleElement> elementMap = getElementMap();
         if (elementMap == null || elementMap.keySet().isEmpty()) {
@@ -68,13 +85,16 @@ public class ClassScheduleEntity {
         return null;
     }
 
+    /**
+     * 加一行
+     */
     public void addRow(String rowTag) {
         try {
             int rowPos = getRowCounts();
             int columnPos = getColumnCounts();
-            for (int i = 0; i < columnPos; i++) {
+            for (int i = 0; i < rowPos; i++) {
                 if (i == 0) continue;
-                addElement(new ClassScheduleElement(rowPos, i, false));
+                addElement(new ClassScheduleElement(rowPos, i + 1, false));
             }
             row++;
             rowTags.add(rowTag);
@@ -83,13 +103,16 @@ public class ClassScheduleEntity {
         }
     }
 
+    /**
+     * 加一列
+     */
     public void addColumn(String columnTag) {
         try {
             int rowPos = getRowCounts();
             int columnPos = getColumnCounts();
-            for (int i = 0; i < rowPos; i++) {
+            for (int i = 0; i < columnPos; i++) {
                 if (i == 0) continue;
-                addElement(new ClassScheduleElement(i, columnPos, false));
+                addElement(new ClassScheduleElement(i + 1, columnPos, false));
             }
             column++;
             columnTags.add(columnTag);
@@ -140,9 +163,22 @@ public class ClassScheduleEntity {
         private boolean check;
 
         public ClassScheduleElement(int rowPos, int columnPos, boolean check) {
+            //在表中的实际角标位置
             this.rowPos = rowPos;
             this.columnPos = columnPos;
             this.check = check;
+        }
+
+        public int getRowPos() {
+            return rowPos;
+        }
+
+        public int getColumnPos() {
+            return columnPos;
+        }
+
+        public boolean isCheck() {
+            return check;
         }
     }
 }
