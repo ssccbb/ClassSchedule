@@ -22,7 +22,7 @@ public class ClassScheduleEntity {
     private List<String> rowTags;
     private Map<String, ClassScheduleElement> elementMap;
 
-    public ClassScheduleEntity(int row, int column, String rowTag, String columnTag, List<String> columnTags, List<String> rowTags) {
+    public ClassScheduleEntity(int row, int column, String rowTag, String columnTag, List<String> rowTags, List<String> columnTags) {
         this.row = row > 1 ? row : 2;
         this.column = column > 1 ? column : 2;
         this.rowTag = rowTag;
